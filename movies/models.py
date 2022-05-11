@@ -5,11 +5,11 @@ class Movie(models.Model):
     eng_name       = models.CharField(max_length=100)
     description    = models.CharField(max_length=500)
     detail_text    = models.CharField(max_length=500)
-    age_grade      = models.PositiveIntegerField()
+    age_grade      = models.CharField(max_length=500)
     is_subtitle    = models.BooleanField()
     screening_type = models.PositiveIntegerField()
     preview_url    = models.CharField(max_length=500)
-    runnning_time  = models.DateTimeField()
+    running_time   = models.PositiveIntegerField()
     reviews        = models.ManyToManyField('users.User',related_name='reviews',through='reviews.MovieReview')
     theaters       = models.ManyToManyField('movies.Theater',related_name='movies',through='movies.MovieTheater')
 
@@ -30,7 +30,7 @@ class WatchPoint(models.Model):
 
 class MovieImage(models.Model):
     movie        = models.ForeignKey('Movie',on_delete=models.CASCADE)
-    storage_path = models.CharField(max_length=500)
+    storage_path = models.CharField(max_length=500,null=True)
     stillcut_url = models.CharField(max_length=500)
 
     class Meta:
@@ -78,8 +78,6 @@ class Seat(models.Model):
 class MovieTheater(models.Model):
     movie      = models.ForeignKey('movies.Movie',on_delete=models.CASCADE)
     theater    = models.ForeignKey('Theater',on_delete=models.CASCADE)
-    room       = models.IntegerField()
-    seat_count = models.IntegerField()
     start_time = models.DateTimeField()
 
     class Meta:

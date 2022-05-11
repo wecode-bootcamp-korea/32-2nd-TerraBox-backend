@@ -5,8 +5,8 @@ class MovieReview(TimeStampedModel):
     movie        = models.ForeignKey('movies.Movie',on_delete=models.CASCADE)
     user         = models.ForeignKey('users.USER',on_delete=models.CASCADE)
     content      = models.CharField(max_length=1000)
-    images_url   = models.CharField(max_length=1000)
-    storage_path = models.CharField(max_length=1000)
+    images_url   = models.CharField(max_length=1000,null=True)
+    storage_path = models.CharField(max_length=1000,null=True)
     likes        = models.ManyToManyField('users.USER',related_name='likes',through='UserReviewLike')
     comments     = models.ManyToManyField('users.USER',related_name='comments',through='UserReviewComment')
 

@@ -1,0 +1,86 @@
+from django.db   import models
+
+class Movie(models.Model):
+    name           = models.CharField(max_length=50)
+    eng_name       = models.CharField(max_length=100)
+    description    = models.CharField(max_length=500)
+    detail_text    = models.CharField(max_length=500)
+    age_grade      = models.PositiveIntegerField()
+    is_subtitle    = models.BooleanField()
+    screening_type = models.PositiveIntegerField()
+    preview_url    = models.CharField(max_length=500)
+    runnning_time  = models.DateTimeField()
+    reviews        = models.ManyToManyField('users.User',related_name='reviews',through='reviews.MovieReview')
+    theaters       = models.ManyToManyField('movies.Theater',related_name='movies',through='movies.MovieTheater')
+
+
+    class Meta:
+        db_table = 'movies'
+
+class WatchPoint(models.Model):
+    movie         = models.OneToOneField('Movie',on_delete=models.CASCADE)
+    director      = models.PositiveIntegerField()
+    actor         = models.PositiveIntegerField()
+    visual_beauty = models.PositiveIntegerField()
+    ost           = models.PositiveIntegerField()
+    story         = models.PositiveIntegerField()
+
+    class Meta:
+        db_table = 'watch_points'
+
+class MovieImage(models.Model):
+    movie        = models.ForeignKey('Movie',on_delete=models.CASCADE)
+    storage_path = models.CharField(max_length=500)
+    stillcut_url = models.CharField(max_length=500)
+
+    class Meta:
+        db_table = 'movie_images'
+
+class WatchCount(models.Model):
+    movie    = models.ForeignKey('Movie',on_delete=models.CASCADE)
+    day_time = models.DateField()
+    count    = models.PositiveIntegerField()
+
+    class Meta:
+        db_table = 'watch_counts'
+
+class Region(models.Model):
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        db_table = 'regions'
+
+class Theater(models.Model):
+    region     = models.ForeignKey('Region',on_delete=models.CASCADE)
+    name       = models.CharField(max_length=100)
+    latitude   = models.CharField(max_length=100)
+    longtitude = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'theaters'
+
+
+class Room(models.Model):
+    theater = models.ForeignKey('Theater',on_delete=models.CASCADE)
+    name    = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'rooms'
+
+class Seat(models.Model):
+    room          = models.ForeignKey('Room',on_delete=models.CASCADE)
+    seat_location = models.CharField(max_length=10)
+
+    class Meta:
+        db_table = 'seats'
+
+
+class MovieTheater(models.Model):
+    movie      = models.ForeignKey('movies.Movie',on_delete=models.CASCADE)
+    theater    = models.ForeignKey('Theater',on_delete=models.CASCADE)
+    room       = models.IntegerField()
+    seat_count = models.IntegerField()
+    start_time = models.DateTimeField()
+
+    class Meta:
+        db_table = 'movie_theaters'

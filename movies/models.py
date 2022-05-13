@@ -10,8 +10,7 @@ class Movie(models.Model):
     screening_type = models.PositiveIntegerField()
     preview_url    = models.CharField(max_length=500)
     running_time   = models.PositiveIntegerField()
-    reviews        = models.ManyToManyField('users.User',related_name='reviews',through='reviews.MovieReview')
-    theaters       = models.ManyToManyField('movies.Theater',related_name='movies',through='movies.MovieTheater')
+    theaters       = models.ManyToManyField('movies.Theater',through='movies.MovieTheater')
 
 
     class Meta:

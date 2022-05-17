@@ -155,7 +155,6 @@ CORS_ALLOW_HEADERS = (
 
 APPEND_SLASH = False
 
-
 #settings.py
 # LOGGING = {
 #     'disable_existing_loggers': False,

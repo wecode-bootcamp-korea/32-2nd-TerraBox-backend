@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from my_settings import DATABASES, SECRET_KEY
+from my_settings import *
 import pymysql
 
 pymysql.install_as_MySQLdb()
@@ -154,3 +154,22 @@ CORS_ALLOW_HEADERS = (
 )
 
 APPEND_SLASH = False
+
+#settings.py
+LOGGING = {
+    'disable_existing_loggers': False,
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

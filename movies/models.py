@@ -78,6 +78,7 @@ class MovieTheater(models.Model):
     movie      = models.ForeignKey('movies.Movie',on_delete=models.CASCADE)
     theater    = models.ForeignKey('Theater',on_delete=models.CASCADE)
     start_time = models.DateTimeField()
+    room       = models.ForeignKey('Room',on_delete=models.CASCADE,null=True)
 
     class Meta:
         db_table = 'movie_theaters'

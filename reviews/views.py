@@ -5,16 +5,16 @@ from django.views       import View
 from django.http        import JsonResponse
 
 from TerraBox.settings  import (
-                        AWS_ACCESS_KEY_ID,
-                        AWS_SECRET_ACCESS_KEY,
-                        AWS_STORAGE_BUCKET_NAME,
-                        S3_IMAGE_URL
-                        )
+AWS_ACCESS_KEY_ID,
+AWS_SECRET_ACCESS_KEY,
+AWS_STORAGE_BUCKET_NAME,
+S3_IMAGE_URL
+)
+
 from core.decorators    import access_token_check
 from reviews.models     import MoviePost
 from movies.models      import Movie
 from users.models       import User
-
 
 class MoviePostView(View):
     @access_token_check
@@ -47,4 +47,22 @@ class MoviePostView(View):
             return JsonResponse({'message:','key_error'},status=400)
         except Exception as e:
             return JsonResponse({'Error':e})
-
+        
+class MoviePostDetailView(View):
+    
+    @access_token_check
+    def delete(self,request,movie_id,moviepost_id):
+        
+        user     = request.user 
+        moviepost  = MoviePost.objects.select_related('user').get(id=moviepost_id)
+        
+        if user != moviepost.user:
+            return JsonResponse({"message":"INVALID_USER"}, status=401)
+        
+        s3r   = boto3.resource('s3',
+                                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                                    aws_secret_access_key = AWS_SECRET_ACCESS_KEY)
+        s3r.Object(AWS_STORAGE_BUCKET_NAME,moviepost.storage_path).delete()
+        moviepost.delete()
+        
+        return JsonResponse({"message":"deleted!"}, status=204)

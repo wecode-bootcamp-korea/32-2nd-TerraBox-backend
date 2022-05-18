@@ -15,6 +15,7 @@ from core.decorators    import access_token_check
 from reviews.models     import MoviePost
 from movies.models      import Movie
 from users.models       import User
+from reviews.models     import UserPostLike
 
 class MoviePostView(View):
     @access_token_check
@@ -99,5 +100,16 @@ class MoviePostDetailView(View):
         
         return JsonResponse({"message":"deleted!"}, status=204)
 
-    
-    
+class MoviePostLike(View):
+    @access_token_check
+    def post(self,request,movie_id,moviepost_id):
+        user = request.user
+        
+        if UserPostLike.objects.filter(review_id=moviepost_id,user_id=user.id).exists():
+            UserPostLike.objects.get(review_id=moviepost_id,user=user.id).delete()
+            
+            return JsonResponse({"message":"like_deleted!"}, status=204)
+        
+        UserPostLike.objects.create(review_id=moviepost_id,user_id=user.id)
+        
+        return JsonResponse({"message":"like_created!"}, status=201)

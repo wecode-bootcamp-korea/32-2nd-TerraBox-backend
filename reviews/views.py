@@ -51,6 +51,19 @@ class MoviePostView(View):
         
 class MoviePostDetailView(View):
     
+    def get(self,request,movie_id,moviepost_id):
+        moviepost = MoviePost.objects.select_related('user').get(id=moviepost_id)
+        movie     = Movie.objects.get(id=movie_id)
+        moviepost = {
+            "movie_name" : movie.name,
+            "user"       : moviepost.user.nickname,
+            "content"    : moviepost.content,
+            "image_url"  : moviepost.images_url,
+            'like'       : moviepost.userpostlike_set.all().count()
+        }
+        
+        return JsonResponse({"moviepost":moviepost}, status=201)
+    
     @access_token_check
     def post(self,request,movie_id,moviepost_id):
         try:

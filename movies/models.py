@@ -1,4 +1,11 @@
-from django.db   import models
+from django.db import models
+
+import enum
+
+class Price(enum.Enum):
+    ADULT    = 12000
+    TEENAGER = 9000
+    KID      = 5000
 
 class Movie(models.Model):
     name           = models.CharField(max_length=50)
@@ -75,10 +82,19 @@ class Seat(models.Model):
 
 
 class MovieTheater(models.Model):
-    movie      = models.ForeignKey('movies.Movie',on_delete=models.CASCADE)
-    theater    = models.ForeignKey('Theater',on_delete=models.CASCADE)
-    start_time = models.DateTimeField()
-    room       = models.ForeignKey('Room',on_delete=models.CASCADE,null=True)
+    movie          = models.ForeignKey('movies.Movie',on_delete=models.CASCADE)
+    theater        = models.ForeignKey('Theater',on_delete=models.CASCADE)
+    start_datetime = models.DateTimeField() #2022-05-10 10
+    room           = models.ForeignKey('Room',on_delete=models.CASCADE,null=True)
 
     class Meta:
         db_table = 'movie_theaters'
+    
+    @property
+    def end_time(self):
+        H, M = divmod(self.movie.running_time, 60)
+        return datetime.datetime.strftime(self.start_time + datetime.timedelta(hours=H, minutes=M), "%H:%M")
+
+    @property
+    def start_time(self):
+        return datetime.datetime.strftime(self.start_time, "%H:%M")

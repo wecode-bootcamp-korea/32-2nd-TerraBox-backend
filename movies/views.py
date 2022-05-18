@@ -6,14 +6,6 @@ from movies.models    import Movie
 from reviews.models   import MoviePost, MovieReview
 
 class ProductListView(View):
-    """
-    사용처
-    -메인페이지의 캐러셀에 사용
-
-    반환
-    -영화 리스트를 반환
-    """
-
     def get(self,requests):
         
         movies_list = Movie.objects.all().prefetch_related('movieimage_set')

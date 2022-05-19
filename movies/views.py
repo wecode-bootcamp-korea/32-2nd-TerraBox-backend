@@ -7,7 +7,6 @@ from reviews.models   import MoviePost, MovieReview
 
 class ProductListView(View):
     def get(self,requests):
-        
         movies_list = Movie.objects.all().prefetch_related('movieimage_set')
         result = [{
             'id'          :movie.id,
@@ -33,6 +32,7 @@ class MovieDetailView(View):
                 'preview_url'      : movie.preview_url,
                 'movieposts_count' : movie.moviepost_set.all().count(),
                 'movieposts'       : [{
+                    'moviepost_id' : moviepost.id,
                     'movie_name'   : movie.name,
                     'user_name'    : moviepost.user.nickname,
                     'content'      : moviepost.content,
@@ -41,6 +41,7 @@ class MovieDetailView(View):
                     }for moviepost in movieposts],
                 'reviews_count'    : movie.moviereview_set.all().count(),
                 'reviews'          : [{
+                    'review_id'    : review.id,
                     'content'      : review.content,
                     'nickname'     : review.user.nickname,
                     'image_url'    : review.user.profile_image_url,                   

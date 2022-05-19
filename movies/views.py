@@ -2,8 +2,8 @@ from django.http      import JsonResponse
 from django.views     import View
 from django.db.models import Count
 
-from movies.models    import Movie, MovieImage
-from reviews.models   import MoviePost
+from movies.models    import Movie
+from reviews.models   import MoviePost, MovieReview
 
 class ProductListView(View):
     """
@@ -28,24 +28,31 @@ class ProductListView(View):
 
 class MovieDetailView(View):
     def get(self,request,movie_id):
-        movie = Movie.objects.prefetch_related('movieimage_set').get(id=movie_id)
+        movie      = Movie.objects.prefetch_related('movieimage_set','moviereview_set').get(id=movie_id)
         movieposts = MoviePost.objects.filter(movie=movie).select_related('user').annotate(like_count = Count('userpostlike'))
+        reviews    = MovieReview.objects.filter(movie=movie).select_related('user').annotate(like_count = Count('userreviewlike'))
         
         result = {
-                'id'            : movie.id,
-                'name'          : movie.name,
-                'eng_name'      : movie.eng_name,
-                'description'   : movie.description,
-                'stillcut_urls' : [image.stillcut_url for image in movie.movieimage_set.all()],
-                'preview_url'   : movie.preview_url,
+                'id'               : movie.id,
+                'name'             : movie.name,
+                'eng_name'         : movie.eng_name,
+                'description'      : movie.description,
+                'stillcut_urls'    : [image.stillcut_url for image in movie.movieimage_set.all()],
+                'preview_url'      : movie.preview_url,
                 'movieposts_count' : movie.moviepost_set.all().count(),
-                'movieposts'    : [{
-                    'movie_name' : movie.name,
-                    'user_name'  : moviepost.user.nickname,
-                    'content'    : moviepost.content,
-                    'images_url' : moviepost.images_url,
-                    
-                    }for moviepost in movieposts]
-            } 
-        
+                'movieposts'       : [{
+                    'movie_name'   : movie.name,
+                    'user_name'    : moviepost.user.nickname,
+                    'content'      : moviepost.content,
+                    'images_url'   : moviepost.images_url,
+                    'like'         : moviepost.like_count,
+                    }for moviepost in movieposts],
+                'reviews_count'    : movie.moviereview_set.all().count(),
+                'reviews'          : [{
+                    'content'      : review.content,
+                    'nickname'     : review.user.nickname,
+                    'image_url'    : review.user.profile_image_url,                   
+                }for review in reviews]
+        }
+
         return JsonResponse({'result':result}, status=200)

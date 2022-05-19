@@ -1,5 +1,6 @@
 import uuid
 import boto3
+import json
 
 from django.views       import View
 from django.http        import JsonResponse
@@ -12,10 +13,11 @@ S3_IMAGE_URL
 )
 
 from core.decorators    import access_token_check
-from reviews.models     import MoviePost
+from reviews.models     import MoviePost, MovieReview
 from movies.models      import Movie
 from users.models       import User
-from reviews.models     import UserPostLike
+from reviews.models     import UserPostLike, UserReviewLike
+
 
 class MoviePostView(View):
     @access_token_check
@@ -48,7 +50,7 @@ class MoviePostView(View):
             return JsonResponse({'message:','key_error'},status=400)
         except Exception as e:
             return JsonResponse({'Error':e})
-        
+
         
 class MoviePostDetailView(View):
     
@@ -62,7 +64,6 @@ class MoviePostDetailView(View):
             "image_url"  : moviepost.images_url,
             'like'       : moviepost.userpostlike_set.all().count()
         }
-        
         return JsonResponse({"moviepost":moviepost}, status=201)
     
     @access_token_check
@@ -100,7 +101,7 @@ class MoviePostDetailView(View):
     def delete(self,request,movie_id,moviepost_id):
         
         user     = request.user 
-        moviepost  = MoviePost.objects.select_related('user').get(id=moviepost_id)
+        moviepost  = MoviePost.objects.get(id=moviepost_id)
         
         if user != moviepost.user:
             return JsonResponse({"message":"INVALID_USER"}, status=401)
@@ -113,6 +114,7 @@ class MoviePostDetailView(View):
         
         return JsonResponse({"message":"deleted!"}, status=204)
 
+
 class MoviePostLike(View):
     @access_token_check
     def post(self,request,movie_id,moviepost_id):
@@ -124,5 +126,84 @@ class MoviePostLike(View):
             return JsonResponse({"message":"like_deleted!"}, status=204)
         
         UserPostLike.objects.create(review_id=moviepost_id,user_id=user.id)
+        
+        return JsonResponse({"message":"like_created!"}, status=201)
+        
+
+class ReviewView(View):
+    @access_token_check
+    def post(self,request,movie_id):
+        try:
+            data       = json.loads(request.body)
+            content    = data.get('content')
+            user       = request.user
+            movie      = Movie.objects.get(id=movie_id)
+            
+            MovieReview.objects.create(
+                movie         = movie,
+                user          = user,
+                content       = content,
+            )
+            
+            return JsonResponse({"message": "created!"}, status=201)
+            
+        except KeyError:
+            return JsonResponse({'message:','key_error'},status=400)
+
+        
+class ReviewDetailView(View):
+    def get(self,request,movie_id,review_id):
+        review    = MovieReview.objects.select_related('user').get(id=review_id)
+        movie     = Movie.objects.get(id=movie_id)
+        review = {
+            "movie_name" : movie.name,
+            "user"       : review.user.nickname,
+            "content"    : review.content,
+            'like'       : review.userreviewlike_set.all().count()
+        }
+        
+        return JsonResponse({"review":review}, status=201)
+    
+    @access_token_check
+    def patch(self,request,movie_id,review_id):
+        try:
+            data       = json.loads(request.body)
+            content    = data.get('content')
+            user       = request.user
+
+            review = MovieReview.objects.get(id=review_id, user_id = request.user.id)
+            
+            review.content = content
+            review.save()
+            
+            return JsonResponse({"message": "updated!"}, status=201)   
+        except MovieReview.DoesNotExist:
+            return JsonResponse({"message":"Review does not exist!"}, status=404)
+        
+        except KeyError:
+            return JsonResponse({'message:','key_error'},status=400)
+        
+    @access_token_check
+    def delete(self,request,movie_id,review_id):
+        try:
+            MovieReview.objects.filter(id=review_id, user_id = request.user.id).delete()
+            
+        except MovieReview.DoesNotExist:
+            return JsonResponse({"message":"Review does not exist!"}, status=404)
+        
+        return JsonResponse({"message":"deleted!"}, status=204)
+
+
+class ReviewLike(View):
+    @access_token_check
+    def post(self,request,movie_id,review_id):
+        user = request.user
+        
+        if UserReviewLike.objects.filter(review_id=review_id,user_id=user.id).exists():
+            UserReviewLike.objects.get(review_id=review_id,user=user.id).delete()
+            
+            return JsonResponse({"message":"like_deleted!"}, status=204)
+        
+        UserReviewLike.objects.create(review_id=review_id,user_id=user.id)
         
         return JsonResponse({"message":"like_created!"}, status=201)

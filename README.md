@@ -1,20 +1,24 @@
 # TerraBox 프로젝트
-🍿 시연영상 : https://www.youtube.com/watch?v=JjHxEmLcN5k
+
 🍿 메가박스 홈페이지 클론코딩
 
 # 개발기간 및 인원
 🍿 개발 기간 : 2022년 5월 9일 ~ 2022년 5월 20일 (12일)
+
 🍿 개발 인원 : 프론트엔드 (박준범(PM), 이나연, 이형준, 김병규), 백엔드 (김영빈, 제정욱)
 
 # 사용 기술 및 협업툴
 🍿 Back-End : Python, Django, AWS, JWT, bcrypt, MySQL, CORS headers, RESTful API
+
 🍿 협업 툴 : Git, Trello, Slack, Notion, Google Spreadsheet
 
 # 프/백 구현 코드
 🍿 백엔드 깃헙 주소 : https://github.com/wecode-bootcamp-korea/32-2nd-TerraBox-backend
+
 🍿 프론트엔드 깃헙 주소 : https://github.com/wecode-bootcamp-korea/32-2nd-TerraBox-frontend
 
 # 구현한 기능
+
  🍿 소셜로그인 / 소셜회원가입 / 토큰
  
  ![테라박스 로그인](https://user-images.githubusercontent.com/100352385/169685706-4e11f19d-d861-416c-afb1-158bfdd90903.gif)

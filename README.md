@@ -18,19 +18,23 @@
  - 소셜로그인 / 소셜회원가입 / 토큰
 
  - 메인페이지
-![테라박스메인](https://user-images.githubusercontent.com/100352385/169685265-367c9be9-0ce0-4c73-be5f-d0bd4c64929a.gif)
+ 
+(https://user-images.githubusercontent.com/100352385/169685265-367c9be9-0ce0-4c73-be5f-d0bd4c64929a.gif)
 
  - 영화 디테일/리뷰 페이지
-![상세페이지1](https://user-images.githubusercontent.com/100352385/169685293-3f57a855-605a-452a-bb98-8f7bf80a7d5b.gif)
-![상세페이지2](https://user-images.githubusercontent.com/100352385/169685305-10c946bf-41ab-489a-8248-1d206adbe015.gif)
+ 
+(https://user-images.githubusercontent.com/100352385/169685293-3f57a855-605a-452a-bb98-8f7bf80a7d5b.gif)
+(https://user-images.githubusercontent.com/100352385/169685305-10c946bf-41ab-489a-8248-1d206adbe015.gif)
 
  - 영화관 위치
 
  - 영화 예매 영화/영화관 선택
-![예매 페이지](https://user-images.githubusercontent.com/100352385/169685285-b0b6b682-0fc4-4870-a466-de0aa14a207d.gif)
+ 
+(https://user-images.githubusercontent.com/100352385/169685285-b0b6b682-0fc4-4870-a466-de0aa14a207d.gif)
 
  - 영화 인원/좌석 선택 후 예매
-![좌석 페이지](https://user-images.githubusercontent.com/100352385/169685273-cc0978e0-af82-456b-a311-15429be83313.gif)
+ 
+(https://user-images.githubusercontent.com/100352385/169685273-cc0978e0-af82-456b-a311-15429be83313.gif)
 
 # Reference
 이 프로젝트는 메가박스 사이트를 참조하여 학습목적으로 만들었습니다. 실무수준의 프로젝트이지만 학습용으로 만들었기 때문에 이 코드를 활용하여 이득을 취하거나 무단 배포할 경우 법적으로 문제될 수 있습니다.

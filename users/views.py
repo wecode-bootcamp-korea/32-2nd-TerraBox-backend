@@ -41,7 +41,7 @@ class KakaoLoginView(View):
             token_expiration_time = datetime.utcnow() + expiration
             
             jwt_access_token = jwt.encode({'id':user.id,'exp':token_expiration_time},SECRET_KEY,algorithm=ALGORITHM)
-
+            
             return JsonResponse({
             'message':'success!',
             'JWT_ACCESS_TOKEN' :jwt_access_token,

@@ -8,14 +8,18 @@ from TerraBox.settings import *
 
 class KaKaoSignTest(TestCase):
     def setUp(self):
-        pass
-        # User.objects.create(
-        #     id= 1,
-        #     name = 'yb',
-        #     kakao_id = 12345,
-        #     email = 'test@test.com',
-        #     profile_image = 'http://test@test'
-        # )
+        
+        User.objects.create(
+            id= 1,
+            nickname = 'YB',
+            kakao_id = 12345,
+            email = "test@email.com",
+            profile_image_url = 'http://test@profile_image'
+        )
+        # 필요없음 > 필요함. 없어도 될줄 알았는데, 없으면 db가 통일되어 있어서 , 기존에 아이디가 만들어졌다 사라져서 id=1 이 될 수 없음
+        # 즉, id =2 가 되어서 jwt토큰이 맛탱이감
+        # 아니면 id=2를 jwt토큰에 넣어주던가
+        
     def tearDown(slef):
         User.objects.all().delete()
 
@@ -58,8 +62,6 @@ class KaKaoSignTest(TestCase):
         self.assertEqual(response.status_code,201)
         #status code는 예외임. 그냥 code로 딸려나오는 듯
         
-        print(response.json())
-        
         #json response >> json으로 풀어줘야 함
         self.assertEqual(response.json(),{
             'message'           : 'success!',
@@ -68,4 +70,5 @@ class KaKaoSignTest(TestCase):
             'nickname'          : 'YB',
             'email'             : "test@email.com",
         })
+        #client로 요청을 보낸 결과가 json response > json으로 풀어줌 > 풀어준 내용이 mockdata를 만들면서 의도한 내용과 일치하는지를 확인해주는 것임
         

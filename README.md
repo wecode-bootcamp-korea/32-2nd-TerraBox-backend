@@ -27,7 +27,7 @@
  - 영화관 위치
 
  - 영화 예매 영화/영화관 선택
- ![예매 페이지](https://user-images.githubusercontent.com/100352385/169685285-b0b6b682-0fc4-4870-a466-de0aa14a207d.gif)
+![예매 페이지](https://user-images.githubusercontent.com/100352385/169685285-b0b6b682-0fc4-4870-a466-de0aa14a207d.gif)
 
  - 영화 인원/좌석 선택 후 예매
 ![좌석 페이지](https://user-images.githubusercontent.com/100352385/169685273-cc0978e0-af82-456b-a311-15429be83313.gif)

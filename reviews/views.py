@@ -135,7 +135,7 @@ class ReviewView(View):
     def post(self,request,movie_id):
         try:
             data       = json.loads(request.body)
-            content    = data.get('content')
+            content    = data['content']
             user       = request.user
             movie      = Movie.objects.get(id=movie_id)
             
@@ -148,7 +148,8 @@ class ReviewView(View):
             return JsonResponse({"message": "created!"}, status=201)
             
         except KeyError:
-            return JsonResponse({'message:','key_error'},status=400)
+            return JsonResponse({'message:':'key_error!'},status=400)
+
 
         
 class ReviewDetailView(View):

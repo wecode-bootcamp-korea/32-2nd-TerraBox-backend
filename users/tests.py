@@ -25,6 +25,7 @@ class KaKaoSignTest(TestCase):
 
     @patch('users.views.requests') #users.views에 등장하는 모든 requests의 값을 magicmock이라는 객체로 바꿔줌
     def test_success_kakaologin_new_user(self,mocked_requests):
+    #mocked_requests는 실제 view에 등장한느 request와 아무런 관련이 없다! 그냥 사용하기 위해 만들어준 객체일 뿐임
         client = Client()
 
         class MockedResponse:

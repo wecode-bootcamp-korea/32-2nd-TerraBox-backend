@@ -58,8 +58,10 @@ class UserMoviePostView(View):
     @access_token_check
     def get(self,request):
         user = self.request.user
-        movieposts = MoviePost.objects.filter(user=user)
-        movieposts = [
+        movieposts = MoviePost.objects.filter(user=user).select_related('movie')
+        
+        if movieposts:
+            movieposts = [
             {
             "movie_name" : moviepost.movie.name,
             "user"       : moviepost.user.nickname,
@@ -69,24 +71,32 @@ class UserMoviePostView(View):
         } for moviepost in movieposts
         ]
         
-        return JsonResponse({"movieposts":movieposts}, status=200)
+            return JsonResponse({"movieposts":movieposts}, status=200)
+        
+        return JsonResponse({"message":"no movie_posts"}, status=200)
+        
 
 
 class UserMovieReviewView(View):
     @access_token_check
     def get(self,request):
         user = self.request.user
-        moviereviews = MovieReview.objects.filter(user=user)
-        moviereviews = [
-            {
-            "movie_name" : moviereview.movie.name,
-            "user"       : moviereview.user.nickname,
-            "content"    : moviereview.content,
-            'like'       : moviereview.userreviewlike_set.all().count()
-        } for moviereview in moviereviews
-        ]
+        moviereviews = MovieReview.objects.filter(user=user).select_related('movie')
+        
+        if moviereviews:
+        
+            moviereviews = [
+                {
+                "movie_name" : moviereview.movie.name,
+                "user"       : moviereview.user.nickname,
+                "content"    : moviereview.content,
+                'like'       : moviereview.userreviewlike_set.all().count()
+            } for moviereview in moviereviews
+            ]
 
-        return JsonResponse({"moviereviews":moviereviews}, status=200)
+            return JsonResponse({"moviereviews":moviereviews}, status=200)
+        
+        return JsonResponse({"message":"no movie_reivews"}, status=200)
 
         
 class MoviePostDetailView(View):

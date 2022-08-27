@@ -101,15 +101,11 @@ class SeatListView(View):
 
         room          = Room.objects.get(movietheater = movietheater_id)
         reserved_seat = Seat.objects.filter(Q(room_id=room.id), 
-        #Q(reservation__movie_theater_id=movietheater_id), 
-        Q(reservation__movie_theater_id=movietheater_id)
-        | Q(reservation__movie_theater_id__isnull=True)).annotate(
+        Q(reservation__movie_theater_id=movietheater_id)| Q(reservation__movie_theater_id__isnull=True)).annotate(
             is_reserved = Case(When(
                 reservation__id__isnull=False, 
                 reservation__movie_theater_id=movietheater_id, then=True), 
                 default=False))
-
-    
 
         seats_list = {
             'room_id'    : room.id,
@@ -134,7 +130,7 @@ class ReserveView(View):
                 return JsonResponse({'message' : 'ALREADY_EXIST'}, status=409)
 
             Reservation.objects.create(
-                user_id          = request.user,
+                user_id          = request.user.id,
                 movie_theater_id = data["movie_theater_id"],
                 type             = data['type'],
                 price            = Price[data['type']].value,

@@ -1,5 +1,12 @@
 from django.db   import models
 
+import enum
+
+class Price(enum.Enum):
+    ADULT    = 12000
+    TEENAGER = 9000
+    KID      = 5000
+
 class Movie(models.Model):
     name           = models.CharField(max_length=50)
     eng_name       = models.CharField(max_length=100)

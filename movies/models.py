@@ -95,3 +95,7 @@ class MovieTheater(models.Model):
 
     class Meta:
         db_table = 'movie_theaters'
+
+
+
+        update set room_id=2 where 

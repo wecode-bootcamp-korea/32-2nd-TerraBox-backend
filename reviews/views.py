@@ -16,7 +16,9 @@ from core.decorators    import access_token_check
 from reviews.models     import MoviePost, MovieReview
 from movies.models      import Movie
 from users.models       import User
-from reviews.models     import UserPostLike, UserReviewLike
+from reviews.models     import UserPostLike, UserReviewLike, MovieReview
+
+
 
 
 class MoviePostView(View):
@@ -50,6 +52,51 @@ class MoviePostView(View):
             return JsonResponse({'message:','key_error'},status=400)
         except Exception as e:
             return JsonResponse({'Error':e})
+
+
+class UserMoviePostView(View):
+    @access_token_check
+    def get(self,request):
+        user = self.request.user
+        movieposts = MoviePost.objects.filter(user=user).select_related('movie')
+        
+        if movieposts:
+            movieposts = [
+            {
+            "movie_name" : moviepost.movie.name,
+            "user"       : moviepost.user.nickname,
+            "content"    : moviepost.content,
+            "image_url"  : moviepost.images_url,
+            'like'       : moviepost.userpostlike_set.all().count()
+        } for moviepost in movieposts
+        ]
+        
+            return JsonResponse({"movieposts":movieposts}, status=200)
+        
+        return JsonResponse({"message":"no movie_posts"}, status=200)
+        
+
+
+class UserMovieReviewView(View):
+    @access_token_check
+    def get(self,request):
+        user = self.request.user
+        moviereviews = MovieReview.objects.filter(user=user).select_related('movie')
+        
+        if moviereviews:
+        
+            moviereviews = [
+                {
+                "movie_name" : moviereview.movie.name,
+                "user"       : moviereview.user.nickname,
+                "content"    : moviereview.content,
+                'like'       : moviereview.userreviewlike_set.all().count()
+            } for moviereview in moviereviews
+            ]
+
+            return JsonResponse({"moviereviews":moviereviews}, status=200)
+        
+        return JsonResponse({"message":"no movie_reivews"}, status=200)
 
         
 class MoviePostDetailView(View):
@@ -130,12 +177,15 @@ class MoviePostLike(View):
         return JsonResponse({"message":"like_created!"}, status=201)
         
 
+
+
+
 class ReviewView(View):
     @access_token_check
     def post(self,request,movie_id):
         try:
             data       = json.loads(request.body)
-            content    = data.get('content')
+            content    = data['content']
             user       = request.user
             movie      = Movie.objects.get(id=movie_id)
             
@@ -148,7 +198,8 @@ class ReviewView(View):
             return JsonResponse({"message": "created!"}, status=201)
             
         except KeyError:
-            return JsonResponse({'message:','key_error'},status=400)
+            return JsonResponse({'message:':'key_error!'},status=400)
+
 
         
 class ReviewDetailView(View):
